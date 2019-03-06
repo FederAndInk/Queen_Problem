@@ -53,7 +53,7 @@ private:
     std::vector<std::string> cmd_s;
     boost::split(cmd_s, cmd, [](char c) { return c == ' '; });
 
-    if (cmd_s[0] == "exit" || cmd_s[0] == "e")
+    if (cmd_s[0] == "exit" || cmd_s[0] == "e" || !std::cin)
     {
       exit = true;
     }

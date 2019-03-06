@@ -79,10 +79,19 @@ private:
   void remove_view(Position const& pos);
   void remove_views(Position const& pos, std::function<void(Position& p)> move);
 
+  // TODO: complete: count_free(int row)
+  // int count_free(int row);
+  // TODO: complete: find_solution(bool step = false)
+  /**
+   * @brief find a solution starting from current board
+   * return true if a solution has been found
+   */
+  // bool find_solution(bool step = false);
+
   template <std::size_t s>
   friend std::ostream& operator<<(std::ostream& out, Board<s> const& b);
 
-  static inline const std::vector<std::function<void(Position& p)>> queen_movement = {
+  static inline const std::array<std::function<void(Position& p)>, 8> queen_movement = {
       [](Position& p) { p.x++; },
       [](Position& p) { p.y++; },
       [](Position& p) { p.x--; },
