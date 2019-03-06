@@ -20,6 +20,7 @@ Note:
 
 - Linux terminal like (with UTF-8 support) only for now (because of the colors)
 - Can work on windows (I think) if you get a Linux terminal to support ANSI colors
+- requires boost (algorithm/string)
 
 Using cmake :)
 
