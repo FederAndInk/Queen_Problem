@@ -27,6 +27,7 @@ public:
     while (!exit)
     {
       std::cout << b << "\n";
+      std::cout << b.get_nb_queen() << " queens placed\n\n";
       if (std::string s = out.str(); s != "")
       {
         std::cout << s << "\n";
@@ -73,6 +74,11 @@ private:
         {
           Position p{std::stoi(cmd_s[1]), cmd_s[2][0]};
           b.add_queen(p);
+          if (b.is_win())
+          {
+            out << Color::GREEN << "You have placed " << size << " queens!\n"
+                << Color::RESET;
+          }
         }
         catch (std::runtime_error const& e)
         {

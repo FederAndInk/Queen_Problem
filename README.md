@@ -14,6 +14,9 @@
 - [x] true chessboard coordinate !
 - [ ] Can solve the problem (backtracking) WIP
 
+![screenshot of the program](./images/sc1.png)
+![screenshot of the program](./images/sc2.png)
+
 ## Compilation
 
 Note:

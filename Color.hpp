@@ -8,7 +8,8 @@ class Color
   Color(std::string const& code);
 
 public:
-  friend std::string operator|(std::string const& str, Color const& c);
+  friend std::string   operator|(std::string const& str, Color const& c);
+  friend std::ostream& operator<<(std::ostream& out, Color const& c);
 
   static Color const RESET;
   static Color const RED;
@@ -25,4 +26,9 @@ public:
 inline std::string operator|(std::string const& str, Color const& c)
 {
   return c.code + str + c.RESET.code;
+}
+
+inline std::ostream& operator<<(std::ostream& out, Color const& c)
+{
+  return out << c.code;
 }

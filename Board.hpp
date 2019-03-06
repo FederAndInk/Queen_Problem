@@ -43,13 +43,12 @@ template <std::size_t size>
 class Board
 {
 private:
-  std::array<std::array<int, size>, size> board;
+  std::array<std::array<int, size>, size> board{{0}};
+  int                                     nb_queen{0};
 
 public:
   static inline const int QUEEN = -1;
   static inline const int FREE = 0;
-
-  Board() : board({0}) {}
 
   int& operator()(Position const& pos);
   int  operator()(Position const& pos) const;
@@ -60,6 +59,16 @@ public:
   bool is_free(Position const& pos) const;
 
   bool is_queen(Position const& pos) const;
+
+  int get_nb_queen() const
+  {
+    return nb_queen;
+  }
+
+  bool is_win() const
+  {
+    return get_nb_queen() == size;
+  }
 
   void clear();
 
@@ -118,6 +127,7 @@ void Board<size>::add_queen(Position const& pos)
     {
       add_views(pos, fn);
     }
+    nb_queen++;
   }
   else
   {
@@ -135,6 +145,7 @@ void Board<size>::remove_queen(Position const& pos)
     {
       remove_views(pos, fn);
     }
+    nb_queen--;
   }
   else
   {
@@ -161,6 +172,7 @@ void Board<size>::clear()
   {
     l.fill(FREE);
   }
+  nb_queen = 0;
 }
 
 template <std::size_t size>
