@@ -78,6 +78,10 @@ private:
         {
           err << e.what() << "\n";
         }
+        catch (std::out_of_range const& e)
+        {
+          err << "(" << cmd_s[1] << ", " << cmd_s[2] << ") is not a valid position\n";
+        }
       }
     }
     else if (cmd_s[0] == "remove" || cmd_s[0] == "r")
@@ -92,6 +96,10 @@ private:
         catch (std::runtime_error const& e)
         {
           err << e.what() << "\n";
+        }
+        catch (std::out_of_range const& e)
+        {
+          err << "(" << cmd_s[1] << ", " << cmd_s[2] << ") is not a valid position\n";
         }
       }
     }
