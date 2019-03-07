@@ -82,7 +82,7 @@ private:
         }
         catch (std::runtime_error const& e)
         {
-          err << e.what() << "\n";
+          err << "(" << cmd_s[1] << ", " << cmd_s[2] << ") is not free\n";
         }
         catch (std::out_of_range const& e)
         {
@@ -101,7 +101,7 @@ private:
         }
         catch (std::runtime_error const& e)
         {
-          err << e.what() << "\n";
+          err << "(" << cmd_s[1] << ", " << cmd_s[2] << ") has no queen\n";
         }
         catch (std::out_of_range const& e)
         {
@@ -133,14 +133,14 @@ private:
         }
         catch (std::invalid_argument const& e)
         {
-          err << cmd;
+          err << cmd << "\n";
           err << "Argument '" << cmd_s[1] << "' invalid\n";
           err << "Type help to get help\n";
         }
       }
       else
       {
-        err << cmd;
+        err << cmd << "\n";
         err << "Argument '" << cmd_s[2] << "' invalid\n";
         err << "Type help to get help\n";
       }

@@ -79,14 +79,12 @@ private:
   void remove_view(Position const& pos);
   void remove_views(Position const& pos, std::function<void(Position& p)> move);
 
-  // TODO: complete: count_free(int row)
-  // int count_free(int row);
-  // TODO: complete: find_solution(bool step = false)
+  int count_free(int row) const;
   /**
    * @brief find a solution starting from current board
    * return true if a solution has been found
    */
-  // bool find_solution(bool step = false);
+  bool find_solution(bool step = false) const;
 
   template <std::size_t s>
   friend std::ostream& operator<<(std::ostream& out, Board<s> const& b);
@@ -268,4 +266,17 @@ std::ostream& operator<<(std::ostream& out, Board<size> const& b)
   }
 
   return out;
+}
+
+template <std::size_t size>
+int Board<size>::count_free(int row) const
+{
+  // TODO: complete: count_free(int row)
+}
+
+template <std::size_t size>
+
+bool Board<size>::find_solution(bool step) const
+{
+  // TODO: complete: find_solution(bool step)
 }
