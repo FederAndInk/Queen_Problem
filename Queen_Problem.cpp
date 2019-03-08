@@ -109,6 +109,17 @@ private:
         }
       }
     }
+    else if (cmd_s[0] == "back" || cmd_s[0] == "b")
+    {
+      try
+      {
+        b.remove_last_queen();
+      }
+      catch (std::runtime_error const& e)
+      {
+        err << "No queen remains\n";
+      }
+    }
     else if (cmd_s[0] == "solve" || cmd_s[0] == "s")
     {
       out << "NIY\n";
@@ -160,6 +171,7 @@ private:
     out << "e -- exit                 exit the program\n";
     out << "p -- place <row> <col>    place a queen at [row, col]\n";
     out << "r -- remove <row> <col>   remove a queen from [row, col]\n";
+    out << "b -- back                 remove last queen\n";
     out << "s -- solve                find solutions\n";
     out << "c -- clear                remove all queens\n";
     out << "\n";

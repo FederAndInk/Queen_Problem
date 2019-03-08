@@ -7,6 +7,7 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <vector>
 
 struct Position
 {
@@ -44,6 +45,7 @@ class Board
 {
 private:
   std::array<std::array<int, size>, size> board{{0}};
+  std::vector<Position>                   movements;
   int                                     nb_queen{0};
 
 public:
@@ -53,8 +55,9 @@ public:
   int& operator()(Position const& pos);
   int  operator()(Position const& pos) const;
 
-  void add_queen(Position const& pos);
-  void remove_queen(Position const& pos);
+  void     add_queen(Position const& pos);
+  void     remove_queen(Position const& pos);
+  Position remove_last_queen();
 
   bool is_free(Position const& pos) const;
 
@@ -72,6 +75,12 @@ public:
 
   void clear();
 
+  /**
+   * @brief find a solution starting from current board
+   * return true if a solution has been found
+   */
+  bool find_solution(bool step = false) const;
+
 private:
   void add_view(Position const& pos);
   void add_views(Position const& pos, std::function<void(Position& p)> move);
@@ -79,12 +88,9 @@ private:
   void remove_view(Position const& pos);
   void remove_views(Position const& pos, std::function<void(Position& p)> move);
 
-  int count_free(int row) const;
-  /**
-   * @brief find a solution starting from current board
-   * return true if a solution has been found
-   */
-  bool find_solution(bool step = false) const;
+  bool move_queen(Position p) const;
+
+  Position last_queen() const;
 
   template <std::size_t s>
   friend std::ostream& operator<<(std::ostream& out, Board<s> const& b);
@@ -134,6 +140,7 @@ void Board<size>::add_queen(Position const& pos)
     {
       add_views(pos, fn);
     }
+    movements.push_back(pos);
     nb_queen++;
   }
   else
@@ -152,11 +159,28 @@ void Board<size>::remove_queen(Position const& pos)
     {
       remove_views(pos, fn);
     }
+    movements.erase(std::remove(std::begin(movements), std::end(movements), pos),
+                    std::end(movements));
     nb_queen--;
   }
   else
   {
     throw std::runtime_error("No queen at " + pos.to_string());
+  }
+}
+
+template <std::size_t size>
+Position Board<size>::remove_last_queen()
+{
+  if (!movements.empty())
+  {
+    Position p = movements.back();
+    remove_queen(movements.back());
+    return p;
+  }
+  else
+  {
+    throw std::runtime_error("No more queen to remove");
   }
 }
 
@@ -180,6 +204,7 @@ void Board<size>::clear()
     l.fill(FREE);
   }
   nb_queen = 0;
+  movements.clear();
 }
 
 template <std::size_t size>
@@ -269,14 +294,33 @@ std::ostream& operator<<(std::ostream& out, Board<size> const& b)
 }
 
 template <std::size_t size>
-int Board<size>::count_free(int row) const
+bool Board<size>::move_queen(Position p) const
 {
-  // TODO: complete: count_free(int row)
+  remove_queen(p);
+  p.x++;
+  while (p.x < size && !is_free(p))
+  {
+    p.x++;
+  }
+
+  if (p.x < size)
+  {
+    add_queen(p);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 template <std::size_t size>
+Position Board<size>::last_queen() const
+{
+  Position p{0, 0};
+}
 
+template <std::size_t size>
 bool Board<size>::find_solution(bool step) const
 {
-  // TODO: complete: find_solution(bool step)
 }
