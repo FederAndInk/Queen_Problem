@@ -14,6 +14,12 @@ struct Position
   int x;
   int y;
 
+  /**
+   * @brief Construct a new Position object
+   * 
+   * @param x the column
+   * @param y the row
+   */
   Position(int x, int y) : x(x), y(y) {}
 
   /**
@@ -52,6 +58,8 @@ public:
   static inline const int QUEEN = -1;
   static inline const int FREE = 0;
 
+  Board() noexcept = default;
+
   int& operator()(Position const& pos);
   int  operator()(Position const& pos) const;
 
@@ -77,9 +85,9 @@ public:
 
   /**
    * @brief find a solution starting from current board
-   * return true if a solution has been found
+   * return false if no (more) solution can be found (we are at the end of possibilities)
    */
-  bool find_solution(bool step = false) const;
+  bool find_solution(bool step = false);
 
 private:
   void add_view(Position const& pos);
@@ -88,9 +96,25 @@ private:
   void remove_view(Position const& pos);
   void remove_views(Position const& pos, std::function<void(Position& p)> move);
 
-  bool move_queen(Position p) const;
+  std::size_t count_free_in(int row) const;
+  /**
+   * @brief move the queen (on p) in the next position possible on the same line
+   * 
+   * @param p 
+   * @return true if the queen can and has been moved
+   * @return false if there was no possibilities on this line
+   */
+  bool move_queen(Position& p);
+  /**
+   * @brief move the queens in the next position
+   * 
+   * @param p the position of the last queen (the down most queen)
+   * @return true if a next position has been found
+   * @return false otherwise
+   */
+  bool next(Position& p);
 
-  Position last_queen() const;
+  Position bottomest_queen(int y_from = size - 1) const;
 
   template <std::size_t s>
   friend std::ostream& operator<<(std::ostream& out, Board<s> const& b);
@@ -294,7 +318,7 @@ std::ostream& operator<<(std::ostream& out, Board<size> const& b)
 }
 
 template <std::size_t size>
-bool Board<size>::move_queen(Position p) const
+bool Board<size>::move_queen(Position& p)
 {
   remove_queen(p);
   p.x++;
@@ -315,12 +339,98 @@ bool Board<size>::move_queen(Position p) const
 }
 
 template <std::size_t size>
-Position Board<size>::last_queen() const
+std::size_t Board<size>::count_free_in(int row) const
 {
-  Position p{0, 0};
+  std::size_t nb = 0;
+
+  for (Position p{0, row}; p.x < size; p.x++)
+  {
+    if (is_free(p))
+    {
+      nb++;
+    }
+  }
+  return nb;
 }
 
 template <std::size_t size>
-bool Board<size>::find_solution(bool step) const
+bool Board<size>::next(Position& p)
 {
+  if (get_nb_queen() == 0)
+  {
+    p = {0, 0};
+    add_queen(p);
+    return true;
+  }
+  else
+  {
+    Position p_tmp{0, p.y + 1};
+    while (p_tmp.x < size && p_tmp.y < size && !is_free(p_tmp))
+    {
+      p_tmp.x++;
+    }
+
+    if (p_tmp.x < size && p_tmp.y < size)
+    {
+      p = p_tmp;
+      add_queen(p);
+    }
+    else
+    {
+      while (get_nb_queen() > 0 && !move_queen(p))
+      {
+        p = bottomest_queen(--p.y);
+      }
+    }
+
+    return get_nb_queen() > 0;
+  }
+}
+
+template <std::size_t size>
+Position Board<size>::bottomest_queen(int y_from) const
+{
+  Position p{0, y_from};
+
+  // NOTE: can be optimized with movements vector instead of walking through all the board
+  while (p.y >= 0 && !is_queen(p))
+  {
+    while (p.x < size && !is_queen(p))
+    {
+      p.x++;
+    }
+    if (p.x >= size)
+    {
+      p.x = 0;
+      p.y--;
+    }
+  }
+  if (p.y < 0)
+  {
+    p = {-1, -1};
+  }
+  return p;
+}
+
+template <std::size_t size>
+bool Board<size>::find_solution(bool step)
+{
+  Position p = bottomest_queen();
+
+  if (step)
+  {
+    return next(p);
+  }
+  else
+  {
+    if (is_win())
+    {
+      next(p);
+    }
+
+    while (!is_win() && next(p))
+    {
+    }
+    return is_win();
+  }
 }

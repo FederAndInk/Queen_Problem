@@ -26,8 +26,7 @@ public:
     out << "type help to see commands\n";
     while (!exit)
     {
-      std::cout << b << "\n";
-      std::cout << b.get_nb_queen() << " queens placed\n\n";
+      show_board();
       if (std::string s = out.str(); s != "")
       {
         std::cout << s << "\n";
@@ -45,6 +44,16 @@ public:
   }
 
 private:
+  void show_board()
+  {
+    std::cout << b << "\n";
+    if (b.is_win())
+    {
+      std::cout << Color::GREEN;
+    }
+    std::cout << b.get_nb_queen() << " queens placed\n\n" << Color::RESET;
+  }
+
   void action()
   {
     std::string cmd;
@@ -122,13 +131,107 @@ private:
     }
     else if (cmd_s[0] == "solve" || cmd_s[0] == "s")
     {
-      out << "NIY\n";
+      using namespace std::chrono_literals;
+      b.clear();
+      show_board();
+
+      int         found_sol = 0;
+      std::string s;
+      std::string prev;
+
+      while (std::cin && s != "stop")
+      {
+        std::cout << found_sol << " solutions found\n\n";
+        std::cout << "Step/auto/nb/stop ?\n";
+        std::getline(std::cin, s);
+
+        if (s == "")
+        {
+          s = prev;
+        }
+
+        boost::split(cmd_s, s, [](char c) { return c == ' '; });
+
+        auto time = 100ms;
+        if (cmd_s.size() == 2)
+        {
+          try
+          {
+            time = std::chrono::milliseconds{std::stoi(cmd_s[1])};
+          }
+          catch (std::invalid_argument const& e)
+          {
+            std::cout << "Invalid time, 500ms used\n";
+            time = 100ms;
+          }
+        }
+
+        if (cmd_s[0] == "nb")
+        {
+          while (b.find_solution())
+          {
+            found_sol++;
+            if ((found_sol % 10'000) == 0)
+            {
+              show_board();
+              std::cout << found_sol << " solutions found\n\n";
+            }
+            // std::this_thread::sleep_for(time);
+          }
+          show_board();
+          std::cout << found_sol << " solutions found\n\n";
+        }
+        if (cmd_s[0] == "auto")
+        {
+          next_solution([this, time]() {
+            show_board();
+            std::this_thread::sleep_for(time);
+          });
+
+          if (!b.is_win())
+          {
+            out << "No more solution(s)\n";
+            s = "stop";
+          }
+        }
+        else if (s == "" || s == "step" || s == "Step")
+        {
+          if (b.find_solution(true))
+          {
+            show_board();
+          }
+          else
+          {
+            out << "No more step\n";
+            s = "stop";
+          }
+        }
+        if (b.is_win())
+        {
+          found_sol++;
+        }
+
+        prev = s;
+      }
+
+      out << found_sol << " solutions found\n";
     }
     else
     {
       err << "Command '" << cmd_s[0] << "' does not exist\n";
       err << "Type help to get help\n";
     }
+  }
+
+  template <class Fn>
+  void next_solution(Fn fn_between_step)
+  {
+    bool has_next;
+    do
+    {
+      has_next = b.find_solution(true);
+      fn_between_step();
+    } while (has_next && !b.is_win());
   }
 
   std::pair<bool, Position> check_coord(std::string const&              cmd,
