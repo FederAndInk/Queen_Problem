@@ -12,7 +12,7 @@
 - [x] Pretty Command line with colors (zoom your terminal !)
 - [x] Showing queen view
 - [x] true chessboard coordinate !
-- [ ] Can solve the problem (backtracking) WIP
+- [X] Can solve the problem (backtracking)
 
 ![screenshot of the program](./images/sc1.png)
 ![screenshot of the program](./images/sc2.png)
