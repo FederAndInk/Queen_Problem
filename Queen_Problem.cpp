@@ -1,6 +1,8 @@
 #include "Board.hpp"
 #include "Color.hpp"
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -10,7 +12,7 @@
 class Queen_Problem
 {
 private:
-  static constexpr std::size_t size = 8;
+  static constexpr int DEFAULT_SIZE{8};
 
   Board             b;
   bool              exit = false;
@@ -18,7 +20,7 @@ private:
   std::stringstream err;
 
 public:
-  Queen_Problem() : b(8) {}
+  Queen_Problem() : b(DEFAULT_SIZE) {}
 
   void launch()
   {
@@ -73,6 +75,28 @@ private:
     {
       b.clear();
     }
+    else if (cmd_s[0] == "resize" || cmd_s[0] == "n")
+    {
+      if (cmd_s.size() == 2)
+      {
+        try
+        {
+          int new_size = std::stoi(cmd_s[1]);
+          b.resize(new_size);
+        }
+        catch (std::invalid_argument const& e)
+        {
+          err << cmd << "\n";
+          err << "Argument '" << cmd_s[1] << "' invalid\n";
+          err << "Type help to get help\n";
+        }
+      }
+      else
+      {
+        err << "Command '" << cmd << "' not complete\n";
+        err << "Type help to get help\n";
+      }
+    }
     else if (cmd_s[0] == "place" || cmd_s[0] == "p")
     {
       auto [valid, p] = check_coord(cmd, cmd_s);
@@ -84,7 +108,7 @@ private:
           b.add_queen(p);
           if (b.is_win())
           {
-            out << Color::GREEN << "You have placed " << size << " queens!\n"
+            out << Color::GREEN << "You have placed " << b.get_size() << " queens!\n"
                 << Color::RESET;
           }
         }
@@ -170,16 +194,21 @@ private:
           while (b.find_solution())
           {
             found_sol++;
-            if ((found_sol % 10'000) == 0)
+            int mod =
+                found_sol < 100
+                    ? 1
+                    : std::min(10'000, std::max(1, (int)std::pow(
+                                                       10, (int)std::log10(found_sol))));
+            if ((found_sol % mod) == 0)
             {
               show_board();
               std::cout << found_sol << " solutions found\n\n";
+              std::this_thread::sleep_for(time);
             }
-            // std::this_thread::sleep_for(time);
           }
           show_board();
           std::cout << found_sol << " solutions found\n\n";
-          found_sol = 0;
+          s = "stop";
         }
         if (cmd_s[0] == "auto")
         {
@@ -272,6 +301,7 @@ private:
     out << ("Commands:\n" | Color::BLUE | Color::UNDERLINED);
     out << "h -- help                 get help\n";
     out << "e -- exit                 exit the program\n";
+    out << "n -- resize <N>           resize the board to be NxN\n";
     out << "p -- place <row> <col>    place a queen at [row, col]\n";
     out << "r -- remove <row> <col>   remove a queen from [row, col]\n";
     out << "b -- back                 remove last queen\n";
@@ -279,8 +309,8 @@ private:
     out << "c -- clear                remove all queens\n";
     out << "\n";
     out << ("info:\n" | Color::PURPLE | Color::UNDERLINED);
-    out << "row: [1.." << size << "]\n";
-    out << "col: [A.." << (char)('A' + size - 1) << "]\n";
+    out << "row: [1.." << b.get_size() << "]\n";
+    out << "col: [A.." << (char)('A' + b.get_size() - 1) << "]\n";
   }
 };
 

@@ -1,4 +1,5 @@
 #include "Board.hpp"
+#include <iomanip>
 
 Board::Board(int size) : size(size), board(size, std::vector(size, FREE)) {}
 
@@ -81,6 +82,19 @@ void Board::clear()
   }
   nb_queen = 0;
   movements.clear();
+}
+
+void Board::resize(int new_size)
+{
+  clear();
+
+  for (auto&& l : board)
+  {
+    l.resize(new_size, FREE);
+  }
+
+  board.resize(new_size, std::vector(new_size, FREE));
+  size = new_size;
 }
 
 void Board::add_view(Position const& pos)
@@ -249,7 +263,8 @@ std::ostream& operator<<(std::ostream& out, Board const& b)
 {
   std::cout << "\e[2J\e[H";
 
-  std::cout << "  ";
+  std::cout << "   ";
+
   for (char no_row = 'A'; no_row < 'A' + b.get_size(); no_row++)
   {
     std::cout << no_row << " ";
@@ -259,7 +274,7 @@ std::ostream& operator<<(std::ostream& out, Board const& b)
   size_t no_line = 1;
   for (auto&& l : b.board)
   {
-    std::cout << no_line++ << " ";
+    std::cout << std::setw(2) << no_line++ << " ";
     for (auto&& i : l)
     {
       if (i == -1)

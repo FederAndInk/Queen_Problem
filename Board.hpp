@@ -87,6 +87,8 @@ public:
 
   void clear();
 
+  void resize(int new_size);
+
   /**
    * @brief find a solution starting from current board
    * return false if no (more) solution can be found (we are at the end of possibilities)
