@@ -180,6 +180,7 @@ private:
           }
           show_board();
           std::cout << found_sol << " solutions found\n\n";
+          found_sol = 0;
         }
         if (cmd_s[0] == "auto")
         {
