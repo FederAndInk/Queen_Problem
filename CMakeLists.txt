@@ -7,7 +7,8 @@ add_executable(queen_problem
                Queen_Problem.cpp
                Color.cpp
                Color.hpp
-               Board.hpp)
+               Board.hpp
+               Board.cpp)
 
 target_compile_features(queen_problem PRIVATE
                         cxx_std_17)

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -13,13 +12,13 @@ class Queen_Problem
 private:
   static constexpr std::size_t size = 8;
 
-  Board<size>       b;
+  Board             b;
   bool              exit = false;
   std::stringstream out;
   std::stringstream err;
 
 public:
-  Queen_Problem() {}
+  Queen_Problem() : b(8) {}
 
   void launch()
   {
