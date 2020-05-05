@@ -2,9 +2,9 @@
 
 ## Problem
 
-- Is it possible to put 8 chess queen on a 8x8 chess ?
-- if yes, is there other solutions ?
-- is it possible on different size (4x4, 10x10, 3x3...)
+- Is it possible to put 8 chess queens on a 8x8 chess?
+- if yes, is there other solutions? How many?
+- is it possible on different board size (4x4, 10x10, 3x3...) to have a solution?
 
 ## features
 
@@ -22,7 +22,7 @@
 Note:
 
 - Linux terminal like (with UTF-8 support) only for now (because of the colors)
-- Can work on windows (I think) if you get a Linux terminal to support ANSI colors
+- Can work on windows (I think) if you get a Linux terminal (to support ANSI colors)
 - requires boost (algorithm/string)
 
 Using cmake :)
