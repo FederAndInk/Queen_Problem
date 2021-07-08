@@ -261,7 +261,7 @@ bool Board::find_solution(bool step)
 
 std::ostream& operator<<(std::ostream& out, Board const& b)
 {
-  std::cout << "\e[2J\e[H";
+  std::cout << "\x1B[2J\x1B[H";
 
   std::cout << "   ";
 

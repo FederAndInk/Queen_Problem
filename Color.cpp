@@ -1,6 +1,6 @@
 #include "Color.hpp"
 
-Color::Color(std::string const& code) : code("\e[" + code + "m") {}
+Color::Color(std::string const& code) : code("\x1B[" + code + "m") {}
 
 Color const Color::RESET{"0"};
 Color const Color::RED{"31"};
